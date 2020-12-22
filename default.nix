@@ -1,5 +1,5 @@
-{ pkgs ? (import ./dep/ci).nixos2003
-, ghc ? "ghc865"
+{ pkgs ? (import ./dep/ci).unstable
+, ghc ? "ghc884"
 }:
 
 with pkgs.haskell.lib;
@@ -11,11 +11,11 @@ in rec {
   haskellPackages = pkgs.haskell.packages."${ghc}".override {
     overrides = self: super: {
       which = self.callCabal2nix "which" (thunkSource ./dep/which) {};
-      cli-extras = self.callCabal2nix "cli-extras" (thunkSource ./dep/cli-extras) {};
+      cli-extras = pkgs.haskell.lib.doJailbreak (self.callCabal2nix "cli-extras" (thunkSource ./dep/cli-extras) {});
       cli-nix = self.callCabal2nix "cli-nix" (thunkSource ./dep/cli-nix) {};
-      cli-git = self.callCabal2nix "cli-git" (thunkSource ./dep/cli-git) {};
-      github = self.callCabal2nix "github" (thunkSource ./dep/github) {};
-      nix-thunk = self.callCabal2nix "nix-thunk" (gitignoreSource ./.) {};
+      cli-git = pkgs.haskell.lib.doJailbreak (self.callCabal2nix "cli-git" (thunkSource ./dep/cli-git) {});
+      github = pkgs.haskell.lib.doJailbreak (self.callCabal2nix "github" (thunkSource ./dep/github) {});
+      nix-thunk = pkgs.haskell.lib.doJailbreak (self.callCabal2nix "nix-thunk" (gitignoreSource ./.) {});
     };
   };
 
